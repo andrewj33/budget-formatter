@@ -1,0 +1,25 @@
+{
+  "name": "budget-formatter",
+  "version": "1.0.0",
+  "description": "This is a simple script that I wrote using JavaScript and Nodejs to help me format all of my csv files when tracking my spending habits and developing a budget",
+  "main": "formatter.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "init": "utils/./runner.sh",
+    "open": "/mnt/c/'Program Files (x86)'/'Microsoft Office'/root/Office16/EXCEL.EXE csv/results.csv",
+    "clear": "rm -rf csv/results.csv"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrewj33/budget-formatter.git"
+  },
+  "author": "andrew hanson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andrewj33/budget-formatter/issues"
+  },
+  "homepage": "https://github.com/andrewj33/budget-formatter#readme",
+  "dependencies": {
+    "moment": "^2.29.1"
+  }
+}
