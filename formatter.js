@@ -41,84 +41,72 @@ const files = [
 ]
 
 for(let fileName of files){
-    let path = `${__dirname}/csv/${fileName}.csv`
-    fs.readFile(path, 'utf8', (err, data) => {
+    console.log(`Starting ${fileName}...`);
+    let path = `${__dirname}/csv/${fileName}.csv`;
+    let data = fs.readFileSync(path, 'utf-8');
 
-        if(err){
-            console.log(err);
-            process.exit(2);
+    if(data && data.length){
+        if(data.includes("NESPRESSO")) {
+            data = data.replace(/USA,/gm,"USA")
+        }
+        if (data.includes("ONLINE PAYMENT, THANK YOU")) {
+            data = data.replace(/ONLINE PAYMENT,/gm, "ONLINE PAYMENT");
         }
 
-        if(data && data.length){
-            if(data.includes("NESPRESSO")) {
-                data = data.replace(/USA,/gm,"USA")
-            }
-            if (data.includes("ONLINE PAYMENT, THANK YOU")) {
-                data = data.replace(/ONLINE PAYMENT,/gm, "ONLINE PAYMENT");
-            }
+        data = data.toLowerCase().split('\n')
+                   .filter(x => x !== '')
+        data.shift()
 
-            // strips first row of column headers
-            data = data.split('\n')
-                    .filter(a => a.length > 0)
-                    .filter((_,i)=> i !== 0)
-                    .filter(line => !filters.some(el => line.toLowerCase().includes(el)));
-
-            // processes bassed on which accountType 
-            const purchaseList = (() => {
-                if(fileName === 'capitalone'){
-                    return data.map(purchaseItem => {
-                        [ buyDate,,,description,,price ] = purchaseItem.split(',');
-                        let tag = processTag(description);
-                        return [ tag, Math.abs(price), dateHandler(buyDate,fileName), description, fileName ];
-                    });
-                } else if(fileName === 'veridian') {
-                    return data.map(purchaseItem => {
-                        [ ,,buyDate,,price,,,description, ...rest ] = purchaseItem.split('","');
-                        let tag = processTag(description);
-                        return [ tag, Math.abs(price), dateHandler(buyDate,fileName), description, fileName ];
-                    });
-                } else if(fileName === 'citi') { 
-                    return data.map(purchaseItem => {
-                        [ ,buyDate,description,price, ...rest ] = purchaseItem.split(',');
-                        let tag = processTag(description);
-                        return [ tag, Math.abs(price), dateHandler(buyDate,fileName), description, fileName ];
-                    });
-                } else if(fileName === 'cme') { 
-                    return data.map(purchaseItem => {
-                        [ ,buyDate,price,,,description, ...rest ] = purchaseItem.split(',');
-                        let tag = processTag(description);
-                        let modPrice = Math.abs(price.replace(/[\)\(]/gm, ''))
-                        return [ tag, modPrice, dateHandler(buyDate,fileName), description, fileName ];
-                    });
-                }
-            })()
-
-
-            // reset data string
-            data = purchaseList.map((purchase) => purchase.join(',')).join('\n');
-
-            // if filename doesn't exist, create one, otherwise append data
-            if(!fs.existsSync(results)){
-                // fs.close(2, (err) => { if (err) throw err; });
-                fs.writeFile(results, data, (err) => {
-                    if (err) throw err;
-                    console.log(`Data from ${fileName} written successfully`);
+        // processes bassed on which accountType 
+        const purchaseList = (() => {
+            if(fileName === 'capitalone'){
+                return data.map(purchaseItem => {
+                    const [ buyDate,,,description,,price, credit ] = purchaseItem.split(',');
+                    const amount = Math.abs(price) || Math.abs(credit) || 0;
+                    const tag = processTag(description)
+                    const date = dateHandler(buyDate, fileName);
+                    return [ tag, amount, date, description, fileName ];
+                });
+            } else if(fileName === 'veridian') {
+                return data.map(purchaseItem => {
+                    [ ,,buyDate,,price,,,description, ...rest ] = purchaseItem.split('","');
+                    const amount = Math.abs(price);
+                    const tag = processTag(description);
+                    const date = dateHandler(buyDate, fileName);
+                    return [ tag, amount, date, description, fileName ];
+                });
+            } else if(fileName === 'citi') { 
+                return data.map(purchaseItem => {
+                    [ ,buyDate,description,price, credit, ...rest ] = purchaseItem.split(',');
+                    const amount = Math.abs(price) || Math.abs(credit) || 0;
+                    const tag = processTag(description)
+                    const date = dateHandler(buyDate, fileName);
+                    return [ tag, amount, date, description, fileName ];
+                });
+            } else if(fileName === 'cme') { 
+                return data.map(purchaseItem => {
+                    [ ,buyDate,price,,,description, ...rest ] = purchaseItem.split(',');
+                    const amount = Math.abs(price.replace(/[\(\)]/gm, ""));
+                    const tag = processTag(description);
+                    const date = dateHandler(buyDate, fileName);
+                    return [ tag, amount, date, description, fileName ];
                 });
             }
-            else {
-                // fs.close(2, (err) => { if (err) throw err; });
-                fs.readFile(results, 'utf8', (err, existingData) => {
-                    if(err){
-                        console.log(err);
-                        process.exit(2);
-                    }
-                    data = [existingData, data].join('\n');
-                    fs.writeFile(results, data, (err) => {
-                        if (err) throw err;
-                        console.log(`Data from ${fileName} appended successfully.`);
-                    });
-                });
-            }
-        };
-    });
+        })()
+
+        // reset data string
+        data = purchaseList.map((purchase) => purchase.join(',')).join('\n');
+
+        // if filename doesn't exist, create one, otherwise append data
+        if(!fs.existsSync(results)){
+            fs.writeFileSync(results, data);
+            console.log(`Done`);
+        }
+        else {
+            const existingData = fs.readFileSync(results, 'utf-8');
+            const combinedData = [existingData, data].join('\n');
+            fs.writeFileSync(results, combinedData);
+            console.log(`Done`);
+        }
+    };
 }

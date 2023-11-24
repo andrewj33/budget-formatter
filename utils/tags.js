@@ -1,19 +1,44 @@
 const tags = [
-    {tag: 'Salary', desc: ['alchemy', 'nationwide']},
+    {tag: 'Andy Salary', desc: ['alchemy']},
+    {tag: 'Emerald Salary', desc: ['nationwide']},
     {tag: 'Deposits', desc: ['dividends', 'mobile deposits']},
-    {tag: 'CCPayment', desc: ['capitalone', 'bank of america', 'online payment']},
+    {tag: 'CCPayment', desc: ['capital one', 'bank of america', 'online payment', 'citi']},
     {tag: 'Rent', desc: ['murlin']},
     {tag: 'Electric Util', desc: ['amer elect pwr']},
     {tag: 'Gas Util', desc: ['columbia gas']},
     {tag: 'Water Util', desc: ['city of cedar']},
     {tag: 'Internet', desc: ['spectrum']},
     {tag: 'Phone', desc: ['verizon']},
-    {tag: 'Auto Maintenance', desc: ['off campus', 'moo moo']},
+    {tag: 'Auto Maintenance', desc: ['off campus', 'moo moo', 'autozone']},
     {tag: 'Auto Insurance', desc: ['state farm insurance']},
     {tag: 'Auto Loan', desc: ['honda']},
     {tag: 'Gasoline', desc: ['caseys','kum & go', 'kum&go', 'pilot', 'bp#', 'kwik trip', 'road ranger', 'costco gas', 'shell oil']},
-    {tag: 'Groceries', desc: ['aldi', 'hyvee', 'hy-vee', 'hy vee', 'wholefds', 'costco', 'nespresso', 'trader joe', 'wm supercenter']},
     {tag: 'Student Loans', desc: ['dept education']},
+    { // Health
+        tag: 'Health',
+        desc: [
+            'clarkson', //eye care
+            'red hawk', // dental Iowa
+            'carroll family dental', // dental columbus
+            'great clips',
+        ]
+    },
+    { // Groceries
+        tag: 'Groceries', 
+        desc: [
+            'aldi', 
+            'hyvee', 
+            'hy-vee', 
+            'hy vee', 
+            'wholefds', 
+            'costco', 
+            'nespresso', 
+            'trader joe', 
+            'wm supercenter',
+            'cvs',
+            'walgreens'
+        ]
+    },
     { // Merchandise
         tag: 'Merchandise', 
         desc: [
@@ -45,7 +70,8 @@ const tags = [
             'wendy\'s',
             'taco johns',
             'rally\'s',
-            'chick\-fil\-a'
+            'chick\-fil\-a',
+            'hunan king'
         ]
     },
     { // Restaurant

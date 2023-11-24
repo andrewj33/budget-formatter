@@ -15,8 +15,8 @@ function pathBuilder(accountType, date) {
 function processTag(description) {
     for(category of tagList) {
         for(vendor of category.desc) {
-            let desc = description?.toLowerCase();
-            let bool = desc?.includes(vendor);
+            const desc = description?.toLowerCase();
+            const bool = desc?.includes(vendor);
             if(bool){
                 return category.tag;
             }
@@ -33,17 +33,8 @@ function dateHandler(str, type) {
     return result;
 }
 
-/**
- * Adds existing file data to newly processed file data
- * then creates a set to remove duplicates,
- */ 
-function duplicatesHandler (data1, data2) {
-    return Array.from(new Set((data1 + '\n' + data2).split('\n'))).join('\n');
-}
-
 module.exports = {
     processTag, 
     dateHandler, 
-    duplicatesHandler,
     pathBuilder,
 }
